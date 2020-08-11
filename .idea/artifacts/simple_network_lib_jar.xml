@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="simple_network_lib:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/simple_network_lib_jar</output-path>
+    <root id="archive" name="simple_network_lib.main.jar">
+      <element id="module-output" name="simple_network_lib.main" />
+    </root>
+  </artifact>
+</component>
