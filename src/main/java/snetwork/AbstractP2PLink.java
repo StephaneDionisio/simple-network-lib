@@ -15,12 +15,12 @@ public abstract class AbstractP2PLink {
     /**
      * Listened port.
      */
-    private final int used_port;
+    private final int usedPort;
 
     /**
      * Socket of this program.
      */
-    protected DatagramSocket socket;
+    private DatagramSocket socket;
 
     /**
      * Address of the connected peer.
@@ -45,8 +45,7 @@ public abstract class AbstractP2PLink {
      * @param port the port used.
      */
     protected AbstractP2PLink(int port) {
-        super();
-        this.used_port = port;
+        this.usedPort = port;
     }
 
     /**
@@ -59,7 +58,7 @@ public abstract class AbstractP2PLink {
     protected final void init() {
         if (this.socket == null || this.socket.isClosed()) {
             try {
-                this.socket = new DatagramSocket(this.used_port);
+                this.socket = new DatagramSocket(this.usedPort);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -93,6 +92,28 @@ public abstract class AbstractP2PLink {
      */
     protected ListenerThread getBackgroundThread() {
         return backgroundThread;
+    }
+
+    /**
+     * <i><b>getSocket</b></i>
+     *
+     * <pre> protected {@link DatagramSocket} getSocket() </pre>
+     *
+     * @return the used udp socket.
+     */
+    protected DatagramSocket getSocket() {
+        return socket;
+    }
+
+    /**
+     * <i><b>getUsedPort</b></i>
+     *
+     * <pre> protected int getUsedPort() </pre>
+     *
+     * @return the used port.
+     */
+    protected int getUsedPort() {
+        return usedPort;
     }
 
     /**
@@ -256,9 +277,21 @@ public abstract class AbstractP2PLink {
         if(!isConnected())
             return;
 
+        send(message, connectedAddress);
+    }
+
+    /**
+     * <i><b>send</b></i>
+     *
+     * <pre> protected void send({@link String} message, {@link InetAddress} address) </pre>
+     *
+     * Send a message to the given address.
+     * @param message the message to send.
+     */
+    protected void send(String message, InetAddress address) {
         byte[] buffer = message.getBytes();
         try {
-            socket.send(new DatagramPacket(buffer, buffer.length, connectedAddress, used_port));
+            socket.send(new DatagramPacket(buffer, buffer.length, address, usedPort));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -315,14 +348,14 @@ public abstract class AbstractP2PLink {
             return;
 
         try {
-            socket = new DatagramSocket(used_port);
+            socket = new DatagramSocket(usedPort);
         } catch (SocketException e) {
             e.printStackTrace();
         }
 
         byte[] buffer = getEndConnectionMessage().getBytes();
         try {
-            socket.send(new DatagramPacket(buffer, buffer.length, connectedAddress, used_port));
+            socket.send(new DatagramPacket(buffer, buffer.length, connectedAddress, usedPort));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -343,15 +376,6 @@ public abstract class AbstractP2PLink {
      * @return true if the received message is the waited message to start a connection, false otherwise.
      */
     protected abstract boolean isAcceptableConnection(String receivedMessage);
-
-    /**
-     * <i><b>getAcceptConnectionMessage</b></i>
-     *
-     * <pre> </pre>protected String getAcceptConnectionMessage() </pre>
-     *
-     * @return the message which will be send as an ack on a successful connection.
-     */
-    protected abstract String getAcceptConnectionMessage();
 
     /**
      * <i><b>getEndConnectionMessage</b></i>

@@ -4,7 +4,6 @@ import snetwork.AbstractP2PLink;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 
 /**
  * Abstract class for an unilateral data flux with a Peer-to-Peer communication.
@@ -26,7 +25,7 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
      * <i><b>AbstractP2PReceiver</b></i>
      *
      * <pre> protected AbstractP2PReceiver() </pre>
-     * <p>
+     *
      * Constructor of {@link AbstractP2PReceiver}.
      */
     protected AbstractP2PReceiver(int port) {
@@ -108,7 +107,7 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
                 buffer = new byte[1000];
                 packet = new DatagramPacket(buffer, buffer.length);
 
-                socket.receive(packet);
+                getSocket().receive(packet);
 
                 message = new String(buffer).substring(0, packet.getLength());
 
@@ -133,20 +132,13 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
         }
     }
 
-    /*******************************************/
-    /*                Abstract                 */
-    /*******************************************/
-
-    @Override
-    protected abstract boolean isAcceptableConnection(String receivedMessage);
-
-    @Override
+    /**
+     * <i><b>getAcceptConnectionMessage</b></i>
+     *
+     * <pre> </pre>protected String getAcceptConnectionMessage() </pre>
+     *
+     * @return the message which will be send as an ack on a successful connection.
+     */
     protected abstract String getAcceptConnectionMessage();
-
-    @Override
-    protected abstract String getEndConnectionMessage();
-
-    @Override
-    protected abstract void onListening(String receivedMessage);
 
 }
