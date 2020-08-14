@@ -329,7 +329,6 @@ public abstract class AbstractP2PLink {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            connectedAddress = null;
         }
     }
 
