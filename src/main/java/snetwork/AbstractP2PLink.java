@@ -268,9 +268,8 @@ public abstract class AbstractP2PLink {
      */
     private void stopListening() {
         if (backgroundThread.isAlive() && !backgroundThread.isInterrupted()) {
-            socket.disconnect();
-            socket.close();
             backgroundThread.interrupt();
+            socket.close();
         }
     }
 
@@ -324,7 +323,6 @@ public abstract class AbstractP2PLink {
     public void stopPeerConnection() {
         if (connectedAddress != null && !backgroundThread.isInterrupted()) {
             backgroundThread.interrupt();
-            socket.disconnect();
             socket.close();
             try {
                 backgroundThread.join();
@@ -375,7 +373,6 @@ public abstract class AbstractP2PLink {
             e.printStackTrace();
         }
 
-        socket.disconnect();
         socket.close();
     }
 
