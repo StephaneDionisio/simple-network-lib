@@ -18,7 +18,8 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
      *
      * Constructor of {@link AbstractP2PSender}.
      * @param port the port used.
-     * @param timeout the socket timeout in milliseconds. timeout <= 0 for no timeout.
+     * @param timeout the socket timeout in milliseconds for the search of peers.
+     *                timeout <= 0 for no timeout.
      */
     protected AbstractP2PSender(int port, int timeout) {
         super(port, timeout);
@@ -33,6 +34,12 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
             finish();
             connectionCallback.onResult(false);
             return;
+        }
+
+        try {
+            getSocket().setSoTimeout(0);
+        } catch (SocketException e) {
+            e.printStackTrace();
         }
 
         connectionCallback.onResult(true);
