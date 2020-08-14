@@ -53,7 +53,7 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
         return new ListenerThread(){
             @Override
             protected boolean beforeAll() {
-                if (!searchPeer()) {
+                if (isInterrupted() || !searchPeer()) {
                     finish();
                     connectionCallback.onResult(false);
                     return false;
