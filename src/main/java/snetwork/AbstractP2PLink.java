@@ -1,10 +1,7 @@
 package snetwork;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 
 /**
  * Abstract class for a Peer-to-Peer communication protocol.
@@ -56,6 +53,30 @@ public abstract class AbstractP2PLink {
     }
 
     /**
+     * <i><b>initSocket</b></i>
+     *
+     * <pre> protected void initSocket() </pre>
+     *
+     * The method used to initialize the socket.
+     */
+    private void initSocket() {
+        // Loop in case the socket is not already open.
+        while(true) {
+            try {
+                this.socket = new DatagramSocket(this.usedPort);
+                if (this.timeout > 0)
+                    socket.setSoTimeout(this.timeout);
+                break;
+            } catch (BindException e) {
+                /* continue */
+            } catch (SocketException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
+
+    /**
      * <i><b>init</b></i>
      *
      * <pre> protected void init() </pre>
@@ -64,13 +85,7 @@ public abstract class AbstractP2PLink {
      */
     protected final void init() {
         if (this.socket == null || this.socket.isClosed()) {
-            try {
-                this.socket = new DatagramSocket(this.usedPort);
-                if(this.timeout > 0)
-                    socket.setSoTimeout(this.timeout);
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
+            initSocket();
         }
 
         backgroundThread = createBackgroundThread();
@@ -321,11 +336,12 @@ public abstract class AbstractP2PLink {
      * Stop the connection with the peer.
      */
     public void stopPeerConnection() {
-        if (connectedAddress != null && !backgroundThread.isInterrupted()) {
+        if (backgroundThread != null && !backgroundThread.isInterrupted()) {
             backgroundThread.interrupt();
             socket.close();
             try {
                 backgroundThread.join();
+                backgroundThread = null;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -359,11 +375,7 @@ public abstract class AbstractP2PLink {
             return;
 
         if(socket.isClosed()) {
-            try {
-                socket = new DatagramSocket(usedPort);
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
+            initSocket();
         }
 
         byte[] buffer = getEndConnectionMessage().getBytes();
