@@ -7,6 +7,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class AbstractP2PSender extends AbstractP2PLink {
 
@@ -23,12 +24,17 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     }
 
     @Override
-    public void startProtocol(Runnable connectionCallback) {
+    public void startProtocol(Consumer<Boolean> connectionCallback) {
         stopPeerConnection();
         init();
 
-        searchPeer();
-        connectionCallback.run();
+        if(!searchPeer()) {
+            finish();
+            connectionCallback.accept(false);
+            return;
+        }
+
+        connectionCallback.accept(true);
         getBackgroundThread().start();
     }
 
