@@ -1,13 +1,13 @@
 package snetwork.sender;
 
 import snetwork.AbstractP2PLink;
+import snetwork.SuccessCallback;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class AbstractP2PSender extends AbstractP2PLink {
 
@@ -24,17 +24,17 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     }
 
     @Override
-    public void startProtocol(Consumer<Boolean> connectionCallback) {
+    public void startProtocol(SuccessCallback connectionCallback) {
         stopPeerConnection();
         init();
 
         if(!searchPeer()) {
             finish();
-            connectionCallback.accept(false);
+            connectionCallback.onResult(false);
             return;
         }
 
-        connectionCallback.accept(true);
+        connectionCallback.onResult(true);
         getBackgroundThread().start();
     }
 

@@ -1,10 +1,10 @@
 package snetwork.receiver;
 
 import snetwork.AbstractP2PLink;
+import snetwork.SuccessCallback;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.util.function.Consumer;
 
 /**
  * Abstract class for an unilateral data flux with a Peer-to-Peer communication.
@@ -16,7 +16,7 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
     /**
      * Runnable called after the connection has been established.
      */
-    private Consumer<Boolean> connectionCallback;
+    private SuccessCallback connectionCallback;
 
     /*******************************************/
     /*              Constructor                */
@@ -38,7 +38,7 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
     /*******************************************/
 
     @Override
-    public void startProtocol(Consumer<Boolean> connectionCallback) {
+    public void startProtocol(SuccessCallback connectionCallback) {
         stopPeerConnection();
         init();
 
@@ -53,11 +53,11 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
             protected boolean beforeAll() {
                 if (!searchPeer()) {
                     finish();
-                    connectionCallback.accept(false);
+                    connectionCallback.onResult(false);
                     return false;
                 }
 
-                connectionCallback.accept(true);
+                connectionCallback.onResult(true);
 
                 if (isInterrupted()) {
                     finish();

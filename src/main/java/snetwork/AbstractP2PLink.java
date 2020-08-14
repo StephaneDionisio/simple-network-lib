@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.function.Consumer;
 
 /**
  * Abstract class for a Peer-to-Peer communication protocol.
@@ -144,7 +143,7 @@ public abstract class AbstractP2PLink {
      * @param connectionCallback the function which will be called after the connection has been established.
      *                           If the connection success the argument is true, false otherwise.
      */
-    public abstract void startProtocol(Consumer<Boolean> connectionCallback);
+    public abstract void startProtocol(SuccessCallback connectionCallback);
 
     /**
      * <i><b>isConnected</b></i>
