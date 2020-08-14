@@ -37,18 +37,6 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
     /*******************************************/
 
     @Override
-    public void startProtocol() {
-        startProtocol(() -> {/* empty */});
-    }
-
-    /**
-     * <i><b>startProtocol</b></i>
-     *
-     * <pre> public void startProtocol({@link Runnable} connectionCallback) </pre>
-     *
-     * Method which start the protocol.
-     * @param connectionCallback the function which will be called after the connection has been established.
-     */
     public void startProtocol(Runnable connectionCallback) {
         stopPeerConnection();
         init();

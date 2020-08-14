@@ -23,29 +23,56 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     }
 
     @Override
-    public void startProtocol() {
+    public void startProtocol(Runnable connectionCallback) {
         stopPeerConnection();
         init();
 
         searchPeer();
+        connectionCallback.run();
         getBackgroundThread().start();
     }
 
+    /**
+     * <i><b>searchPeer</b></i>
+     *
+     * <pre> protected boolean searchPeer({@link List}<{@link InetAddress}> addresses) </pre>
+     *
+     * Search and set a peer to be the sender (equivalent to {@link #searchPeer(List)} with a null argument)
+     * @return true if a peer is found, otherwise false.
+     */
     @Override
     protected boolean searchPeer() {
+        return searchPeer(null);
+    }
+
+    /**
+     * <i><b>searchPeer</b></i>
+     *
+     * <pre> protected boolean searchPeer({@link List}<{@link InetAddress}> addresses) </pre>
+     *
+     * Search and set a peer to be the sender.
+     * @param addresses the of of potential peers addresses.
+     *                  If null, use all the addresses that are in the local network.
+     * @return true if a peer is found, otherwise false.
+     */
+    protected boolean searchPeer(List<InetAddress> addresses) {
 
         // Search; udp socket.
         DatagramPacket packet;
         String connectionMessage = getConnectionMessage();
 
-        try {
-            for (InetAddress address : listAllBroadcastAddresses()) {
-                send(connectionMessage, address);
-                System.out.println(getClass().getName() + "Broadcast packet sent to: " + address.getHostAddress());
+        if(addresses == null) {
+            try {
+                addresses = listAllBroadcastAddresses();
+            } catch (SocketException e) {
+                e.printStackTrace();
+                return false;
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-            return false;
+        }
+
+        for (InetAddress address : addresses) {
+            send(connectionMessage, address);
+            System.out.println(getClass().getName() + "Broadcast packet sent to: " + address.getHostAddress());
         }
 
         byte[] buf;

@@ -140,8 +140,9 @@ public abstract class AbstractP2PLink {
      * <pre> public void startProtocol() </pre>
      *
      * Method to start the protocol.
+     * @param connectionCallback the function which will be called after the connection has been established.
      */
-    public abstract void startProtocol();
+    public abstract void startProtocol(Runnable connectionCallback);
 
     /**
      * <i><b>isConnected</b></i>
