@@ -28,9 +28,11 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
      * <pre> protected AbstractP2PReceiver() </pre>
      *
      * Constructor of {@link AbstractP2PReceiver}.
+     * @param port the used port.
+     * @param timeout the socket timeout in milliseconds. timeout <= 0 for no timeout.
      */
-    protected AbstractP2PReceiver(int port) {
-        super(port);
+    protected AbstractP2PReceiver(int port, int timeout) {
+        super(port, timeout);
     }
 
     /*******************************************/

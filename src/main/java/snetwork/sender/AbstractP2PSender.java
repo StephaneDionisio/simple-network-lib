@@ -18,9 +18,10 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
      *
      * Constructor of {@link AbstractP2PSender}.
      * @param port the port used.
+     * @param timeout the socket timeout in milliseconds. timeout <= 0 for no timeout.
      */
-    protected AbstractP2PSender(int port) {
-        super(port);
+    protected AbstractP2PSender(int port, int timeout) {
+        super(port, timeout);
     }
 
     @Override
