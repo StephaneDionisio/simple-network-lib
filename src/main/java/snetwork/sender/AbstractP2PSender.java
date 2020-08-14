@@ -93,6 +93,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
                 String message = new String(buf).substring(0, packet.getLength());
 
                 if (isAcceptableConnection(message)) {
+                    setConnectedAddress(packet.getAddress());
                     return true;
                 }
 
