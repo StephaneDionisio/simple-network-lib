@@ -359,10 +359,12 @@ public abstract class AbstractP2PLink {
         if(connectedAddress == null)
             return;
 
-        try {
-            socket = new DatagramSocket(usedPort);
-        } catch (SocketException e) {
-            e.printStackTrace();
+        if(socket.isClosed()) {
+            try {
+                socket = new DatagramSocket(usedPort);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
         }
 
         byte[] buffer = getEndConnectionMessage().getBytes();
