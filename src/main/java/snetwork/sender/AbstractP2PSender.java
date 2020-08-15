@@ -126,8 +126,8 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
      */
     private List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();
-        Enumeration<NetworkInterface> interfaces
-                = NetworkInterface.getNetworkInterfaces();
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+
         while (interfaces.hasMoreElements()) {
             NetworkInterface networkInterface = interfaces.nextElement();
 
@@ -136,7 +136,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
             }
 
             for(InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
-                if (address != null) {
+                if (address != null && address.getBroadcast() != null) {
                     broadcastList.add(address.getBroadcast());
                 }
             }
