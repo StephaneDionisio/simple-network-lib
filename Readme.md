@@ -2,8 +2,6 @@
 ## installation as a subproject
 
 ### Java project
-Create a `libs` directory at the root of your project.  
-
 in **build.gradle**
 ```gradle
 dependencies {
@@ -28,17 +26,19 @@ task getLibs {
             }
     }
 }
-compileJava.dependsOn getLibs
+
+tasks.matching { it.name != 'getLibs' }.all { Task task ->
+    task.dependsOn getLibs
+}
 ```
+
 in **settings.gradle**
 ```gradle
 include ':[MyProject]', ':libs:simple_network_lib'
 project(':libs:simple_network_lib').projectDir = new File(settingsDir, 'libs/simple_network_lib')
 ```
 ### Android project
-Create a `libs` directory in `app` directory.  
-
-in **app/build.gradle**
+in **/build.gradle**
 ```gradle
 dependencies {
     ...
@@ -47,23 +47,27 @@ dependencies {
 
 task getLibs {
     doFirst {
-        if(!file('libs/').exists())
-            mkdir 'libs'
-        if(!file('libs/simple_network_lib/').exists())
-            mkdir 'libs/simple_network_lib'
-        if(!file('libs/simple_network_lib/.git').exists())
+        if(!file('app/libs/').exists())
+            mkdir 'app/libs'
+        if(!file('app/libs/simple_network_lib/').exists())
+            mkdir 'app/libs/simple_network_lib'
+        if(!file('app/libs/simple_network_lib/.git').exists())
             exec {
-                commandLine 'git', 'clone', 'git@github.com:StephaneDionisio/simple_network_lib.git', 'libs/simple_network_lib'
+                commandLine 'git', 'clone', 'git@github.com:StephaneDionisio/simple_network_lib.git', 'app/libs/simple_network_lib'
             }
         else
             exec {
-                workingDir 'libs/simple_network_lib'
+                workingDir 'app/libs/simple_network_lib'
                 commandLine 'git', 'pull'
             }
     }
 }
-preBuild.dependsOn getLibs
+
+tasks.matching { it.name != 'getLibs' }.all { Task task ->
+    task.dependsOn getLibs
+}
 ```
+
 in **settings.gradle**
 ```gradle
 include ':app', ':libs:simple_network_lib'
