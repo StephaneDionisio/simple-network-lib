@@ -223,6 +223,7 @@ public abstract class AbstractP2PLink {
             return true;
         }
 
+        @SuppressWarnings("EmptyMethod")
         protected void afterAll() {
             /* do nothing */
         }

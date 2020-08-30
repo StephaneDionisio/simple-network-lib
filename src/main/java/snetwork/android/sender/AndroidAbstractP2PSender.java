@@ -18,7 +18,7 @@ public abstract class AndroidAbstractP2PSender extends AbstractP2PSender {
     /**
      * The owner app.
      */
-    private Application owner;
+    private final Application owner;
 
     /**
      * <i><b>AbstractP2PSender</b></i>

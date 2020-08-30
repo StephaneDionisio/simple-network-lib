@@ -6,7 +6,7 @@ in **build.gradle**
 ```gradle
 dependencies {
     ...
-    implementation project(':libs:simple_network_lib')
+    implementation project(':simple_network_lib')
 }
 
 task getLibs {
@@ -17,7 +17,7 @@ task getLibs {
             mkdir 'libs/simple_network_lib'
         if(!file('libs/simple_network_lib/.git').exists())
             exec {
-                commandLine 'git', 'clone', 'git@github.com:StephaneDionisio/simple_network_lib.git', 'libs/simple_network_lib'
+                commandLine 'git', 'clone', 'https://github.com/StephaneDionisio/simple_network_lib.git', 'libs/simple_network_lib'
             }
         else
             exec {
@@ -34,15 +34,15 @@ tasks.matching { it.name != 'getLibs' }.all { Task task ->
 
 in **settings.gradle**
 ```gradle
-include ':[MyProject]', ':libs:simple_network_lib'
-project(':libs:simple_network_lib').projectDir = new File(settingsDir, 'libs/simple_network_lib')
+include ':[MyProject]', ':simple_network_lib'
+project(':simple_network_lib').projectDir = new File(settingsDir, 'libs/simple_network_lib')
 ```
 ### Android project
 in **app/build.gradle**
 ```gradle
 dependencies {
     ...
-    implementation project(':libs:simple_network_lib')
+    implementation project(':simple_network_lib')
 }
 
 task getLibs {
@@ -53,7 +53,7 @@ task getLibs {
             mkdir 'libs/simple_network_lib'
         if(!file('libs/simple_network_lib/.git').exists())
             exec {
-                commandLine 'git', 'clone', 'git@github.com:StephaneDionisio/simple_network_lib.git', 'libs/simple_network_lib'
+                commandLine 'git', 'clone', 'https://github.com/StephaneDionisio/simple_network_lib.git', 'libs/simple_network_lib'
             }
         else
             exec {
@@ -70,6 +70,6 @@ tasks.matching { it.name != 'getLibs' }.all { Task task ->
 
 in **settings.gradle**
 ```gradle
-include ':app', ':libs:simple_network_lib'
-project(':libs:simple_network_lib').projectDir = new File(settingsDir, 'app/libs/simple_network_lib')
+include ':app', ':simple_network_lib'
+project(':simple_network_lib').projectDir = new File(settingsDir, 'app/libs/simple_network_lib')
 ```
