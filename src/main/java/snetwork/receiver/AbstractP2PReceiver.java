@@ -50,25 +50,27 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
 
     @Override
     protected ListenerThread createBackgroundThread() {
-        return new ListenerThread(){
-            @Override
-            protected boolean beforeAll() {
-                if (isInterrupted() || !searchPeer()) {
-                    finish();
-                    connectionCallback.onResult(false);
-                    return false;
-                }
+        return new ListenerThread();
+    }
 
-                connectionCallback.onResult(true);
-
-                if (isInterrupted()) {
-                    finish();
-                    return false;
-                }
-
-                return true;
+    protected class ListenerThread extends AbstractP2PLink.ListenerThread {
+        @Override
+        protected final boolean beforeAll() {
+            if (isInterrupted() || !searchPeer()) {
+                finish();
+                connectionCallback.onResult(false);
+                return false;
             }
-        };
+
+            connectionCallback.onResult(true);
+
+            if (isInterrupted()) {
+                finish();
+                return false;
+            }
+
+            return true;
+        }
     }
 
     /*******************************************/
