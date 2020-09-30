@@ -4,7 +4,9 @@ import snetwork.AbstractP2PLink;
 import snetwork.SuccessCallback;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.DatagramPacket;
+import java.util.Arrays;
 
 /**
  * Abstract class for an unilateral data flux with a Peer-to-Peer communication.
@@ -25,7 +27,7 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
     /**
      * <i><b>AbstractP2PReceiver</b></i>
      *
-     * <pre> protected AbstractP2PReceiver() </pre>
+     * <pre> protected AbstractP2PReceiver(int port, int timeout) </pre>
      *
      * Constructor of {@link AbstractP2PReceiver}.
      * @param port the used port.
@@ -40,7 +42,7 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
     /*******************************************/
 
     @Override
-    public void startProtocol(SuccessCallback connectionCallback) {
+    public void startProtocol(SuccessCallback connectionCallback) throws BindException {
         stopPeerConnection();
         init();
 
@@ -92,7 +94,6 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
 
             byte[] buffer;
             DatagramPacket packet = null;
-            String message;
 
             Thread backgroundThread = getBackgroundThread();
 
@@ -103,9 +104,9 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
 
                 getSocket().receive(packet);
 
-                message = new String(buffer).substring(0, packet.getLength());
+                buffer = Arrays.copyOf(buffer, packet.getLength());
 
-                if (isAcceptableConnection(message))
+                if (isAcceptableConnection(buffer))
                     break;
             }
 
@@ -129,10 +130,10 @@ public abstract class AbstractP2PReceiver extends AbstractP2PLink {
     /**
      * <i><b>getAcceptConnectionMessage</b></i>
      *
-     * <pre> </pre>protected String getAcceptConnectionMessage() </pre>
+     * <pre> </pre>protected byte[] getAcceptConnectionMessage() </pre>
      *
      * @return the message which will be send as an ack on a successful connection.
      */
-    protected abstract String getAcceptConnectionMessage();
+    protected abstract byte[] getAcceptConnectionMessage();
 
 }

@@ -6,6 +6,7 @@ import snetwork.SuccessCallback;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     /**
      * <i><b>AbstractP2PSender</b></i>
      *
-     * <pre> protected AbstractP2PSender(int port) </pre>
+     * <pre> protected AbstractP2PSender(int port, int timeout) </pre>
      *
      * Constructor of {@link AbstractP2PSender}.
      * @param port the port used.
@@ -26,7 +27,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     }
 
     @Override
-    public void startProtocol(SuccessCallback connectionCallback) {
+    public void startProtocol(SuccessCallback connectionCallback) throws BindException {
         stopPeerConnection();
         init();
 
@@ -73,7 +74,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
 
         // Search; udp socket.
         DatagramPacket packet;
-        String connectionMessage = getConnectionMessage();
+        byte[] buf = getConnectionMessage();
 
         if(addresses == null) {
             try {
@@ -85,11 +86,10 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
         }
 
         for (InetAddress address : addresses) {
-            send(connectionMessage, address);
+            send(buf, address);
             System.out.println(getClass().getName() + "Broadcast packet sent to: " + address.getHostAddress());
         }
 
-        byte[] buf;
         while (true) {
             try {
                 buf = new byte[1000];
@@ -97,9 +97,9 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
 
                 getSocket().receive(packet);
 
-                String message = new String(buf).substring(0, packet.getLength());
+                buf = Arrays.copyOf(buf, packet.getLength());
 
-                if (isAcceptableConnection(message)) {
+                if (isAcceptableConnection(buf)) {
                     setConnectedAddress(packet.getAddress());
                     return true;
                 }
@@ -149,10 +149,10 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     /**
      * <i><b>getConnectionMessage</b></i>
      *
-     * <pre> </pre>protected {@link String} getConnectionMessage() </pre>
+     * <pre> </pre>protected byte[] getConnectionMessage() </pre>
      *
      * @return the message which will be send as a start connection message.
      */
-    protected abstract String getConnectionMessage();
+    protected abstract byte[] getConnectionMessage();
 
 }

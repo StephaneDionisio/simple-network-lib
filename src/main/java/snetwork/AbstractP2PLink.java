@@ -2,6 +2,7 @@ package snetwork;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Arrays;
 
 /**
  * Abstract class for a Peer-to-Peer communication protocol.
@@ -41,7 +42,7 @@ public abstract class AbstractP2PLink {
     /**
      * <i><b>AbstractP2PReceiver</b></i>
      *
-     * <pre> protected AbstractP2PReceiver(int port) </pre>
+     * <pre> protected AbstractP2PReceiver(int port, int timeout) </pre>
      *
      * Constructor of {@link snetwork.AbstractP2PLink}.
      * @param port the port used.
@@ -59,8 +60,9 @@ public abstract class AbstractP2PLink {
      *
      * The method used to initialize the socket.
      */
-    private void initSocket() {
-        // Loop in case the socket is not already open.
+    private void initSocket() throws BindException {
+        // Loop in case the socket is closing and so not already open.
+        long time = System.currentTimeMillis();
         while(true) {
             try {
                 this.socket = new DatagramSocket(this.usedPort);
@@ -68,7 +70,11 @@ public abstract class AbstractP2PLink {
                     socket.setSoTimeout(this.timeout);
                 break;
             } catch (BindException e) {
-                /* continue */
+                /* Retry during 3s in case the socket is closing and so not already open. */
+                if(System.currentTimeMillis() - time >= 3000) {
+                    System.err.println("Socket already in use (port: " + usedPort + ").");
+                    throw e;
+                }
             } catch (SocketException e) {
                 e.printStackTrace();
                 break;
@@ -83,7 +89,7 @@ public abstract class AbstractP2PLink {
      *
      * The method used to initialize the socket and the background thread.
      */
-    protected final void init() {
+    protected final void init() throws BindException {
         if (this.socket == null || this.socket.isClosed()) {
             initSocket();
         }
@@ -167,7 +173,7 @@ public abstract class AbstractP2PLink {
      * @param connectionCallback the function which will be called after the connection has been established.
      *                           If the connection success the argument is true, false otherwise.
      */
-    public abstract void startProtocol(SuccessCallback connectionCallback);
+    public abstract void startProtocol(SuccessCallback connectionCallback) throws BindException;
 
     /**
      * <i><b>isConnected</b></i>
@@ -244,7 +250,6 @@ public abstract class AbstractP2PLink {
 
         byte[] buffer;
         DatagramPacket packet;
-        String message;
 
         while (!backgroundThread.isInterrupted()) {
 
@@ -257,14 +262,14 @@ public abstract class AbstractP2PLink {
                 if (!packet.getAddress().equals(connectedAddress))
                     continue;
 
-                message = new String(buffer).substring(0, packet.getLength());
+                buffer = Arrays.copyOf(buffer, packet.getLength());
 
                 /* END */
-                if (message.equals(getEndConnectionMessage())) {
+                if (isEndConnection(buffer)) {
                     stopListening();
 
                 } else {
-                    onListening(message);
+                    onListening(buffer);
                 }
 
             } catch (IOException e) {
@@ -296,16 +301,45 @@ public abstract class AbstractP2PLink {
     /**
      * <i><b>send</b></i>
      *
+     * <pre> protected void send(byte[] message) </pre>
+     *
+     * Send a message to the peer if the connection is up.
+     * @param message the message to send.
+     */
+    protected void send(byte[] message) {
+        if(!isConnected())
+            return;
+
+        send(message, connectedAddress);
+    }
+
+    /**
+     * <i><b>send</b></i>
+     *
+     * <pre> protected void send(byte[] message, {@link InetAddress} address) </pre>
+     *
+     * Send a message to the given address.
+     * @param message the message to send.
+     * @param address the destination.
+     */
+    protected void send(byte[] message, InetAddress address) {
+        try {
+            socket.send(new DatagramPacket(message, message.length, address, usedPort));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * <i><b>send</b></i>
+     *
      * <pre> protected void send({@link String} message) </pre>
      *
      * Send a message to the peer if the connection is up.
      * @param message the message to send.
      */
     protected void send(String message) {
-        if(!isConnected())
-            return;
-
-        send(message, connectedAddress);
+        send(message.getBytes());
     }
 
     /**
@@ -317,12 +351,7 @@ public abstract class AbstractP2PLink {
      * @param message the message to send.
      */
     protected void send(String message, InetAddress address) {
-        byte[] buffer = message.getBytes();
-        try {
-            socket.send(new DatagramPacket(buffer, buffer.length, address, usedPort));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        send(message.getBytes(), address);
     }
 
     /*******************************************/
@@ -376,10 +405,14 @@ public abstract class AbstractP2PLink {
             return;
 
         if(socket.isClosed()) {
-            initSocket();
+            try {
+                initSocket();
+            } catch (BindException e) {
+                /* Should not happen */
+            }
         }
 
-        byte[] buffer = getEndConnectionMessage().getBytes();
+        byte[] buffer = getEndConnectionMessage();
         try {
             socket.send(new DatagramPacket(buffer, buffer.length, connectedAddress, usedPort));
         } catch (IOException e) {
@@ -396,31 +429,36 @@ public abstract class AbstractP2PLink {
     /**
      * <i><b>isAcceptableConnection</b></i>
      *
-     * <pre> protected boolean isAcceptableConnection(String receivedMessage) </pre>
+     * <pre> protected boolean isAcceptableConnection(byte[] receivedMessage) </pre>
      *
      * @param receivedMessage the received message.
      * @return true if the received message is the waited message to start a connection, false otherwise.
      */
-    protected abstract boolean isAcceptableConnection(String receivedMessage);
+    protected abstract boolean isAcceptableConnection(byte[] receivedMessage);
+
+    private boolean isEndConnection(byte[] receivedMessage) {
+        byte[] endConnectionMessage = getEndConnectionMessage();
+        return Arrays.equals(receivedMessage, endConnectionMessage);
+    }
 
     /**
      * <i><b>getEndConnectionMessage</b></i>
      *
-     * <pre> protected String getEndConnectionMessage() </pre>
+     * <pre> protected byte[] getEndConnectionMessage() </pre>
      *
      * @return the message which will be send to end a connection.
      */
-    protected abstract String getEndConnectionMessage();
+    protected abstract byte[] getEndConnectionMessage();
 
     /**
      * <i><b>onListening</b></i>
      *
-     * <pre> protected boolean onListening(String receivedMassage) </pre>
+     * <pre> protected boolean onListening(byte[] receivedMassage) </pre>
      *
      * The action to when a message is received.
      * @param receivedMessage the received message.
      */
-    protected abstract void onListening(String receivedMessage);
+    protected abstract void onListening(byte[] receivedMessage);
 
 }
 
