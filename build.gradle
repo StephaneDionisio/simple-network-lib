@@ -2,8 +2,11 @@ plugins {
     id 'java'
 }
 
-group 'com.github.stephane_dionisio.simple_network_lib'
+group 'com.github.stephanedionisio'
 version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8 // java 8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -12,4 +15,23 @@ repositories {
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     implementation 'com.google.android:android:4.1.1.4'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier.set("javadoc")
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+wrapper {
+    gradleVersion = "6.2.1"
+    distributionType = Wrapper.DistributionType.ALL
 }
