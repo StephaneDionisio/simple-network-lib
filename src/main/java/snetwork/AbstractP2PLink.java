@@ -46,7 +46,7 @@ public abstract class AbstractP2PLink {
      *
      * Constructor of {@link snetwork.AbstractP2PLink}.
      * @param port the port used.
-     * @param timeout the socket timeout in milliseconds. timeout <= 0 for no timeout.
+     * @param timeout the socket timeout in milliseconds. timeout &lt;= 0 for no timeout.
      */
     protected AbstractP2PLink(int port, int timeout) {
         this.usedPort = port;

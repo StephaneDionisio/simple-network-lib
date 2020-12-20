@@ -1,7 +1,7 @@
 package snetwork;
 
 /**
- * Interface equivalent to Consumer<Boolean>.
+ * Interface equivalent to Consumer&lt;Boolean&gt;.
  */
 public interface SuccessCallback {
 

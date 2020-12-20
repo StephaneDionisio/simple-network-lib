@@ -28,7 +28,7 @@ public abstract class AndroidAbstractP2PSender extends AbstractP2PSender {
      * Constructor of {@link AbstractP2PSender}.
      * @param port    the port used.
      * @param timeout the socket timeout in milliseconds for the search of peers.
-     *                timeout <= 0 for no timeout.
+     *                timeout &lt;= 0 for no timeout.
      * @param owner the application.
      */
     protected AndroidAbstractP2PSender(int port, int timeout, Application owner) {

@@ -12,7 +12,7 @@ public abstract class AbstractGenericP2PReceiver<T> extends AbstractP2PReceiver 
      * Constructor of {@link AbstractGenericP2PReceiver}.
      *
      * @param port    the used port.
-     * @param timeout the socket timeout in milliseconds. timeout <= 0 for no timeout.
+     * @param timeout the socket timeout in milliseconds. timeout &lt;= 0 for no timeout.
      */
     protected AbstractGenericP2PReceiver(int port, int timeout) {
         super(port, timeout);
@@ -65,7 +65,7 @@ public abstract class AbstractGenericP2PReceiver<T> extends AbstractP2PReceiver 
     /**
      * <i><b>getAcceptConnectionMessage</b></i>
      *
-     * <pre> </pre>protected T getAcceptConnectionMessage() </pre>
+     * <pre> protected T getAcceptConnectionMessage() </pre>
      *
      * @return the message which will be send as an ack on a successful connection.
      */

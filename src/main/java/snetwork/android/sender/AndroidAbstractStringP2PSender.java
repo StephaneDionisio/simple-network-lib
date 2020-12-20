@@ -13,7 +13,7 @@ public abstract class AndroidAbstractStringP2PSender extends AndroidAbstractGene
      *
      * @param port    the port used.
      * @param timeout the socket timeout in milliseconds for the search of peers.
-     *                timeout <= 0 for no timeout.
+     *                timeout &lt;= 0 for no timeout.
      * @param owner   the application.
      */
     protected AndroidAbstractStringP2PSender(int port, int timeout, Application owner) {
@@ -23,7 +23,7 @@ public abstract class AndroidAbstractStringP2PSender extends AndroidAbstractGene
     /**
      * <i><b>translateFromBytes</b></i>
      *
-     * <pre> </pre>protected String translateFromBytes(byte[] message) </pre>
+     * <pre> protected String translateFromBytes(byte[] message) </pre>
      *
      * @param message the message to translate.
      * @return the String obtained from the message.
@@ -36,7 +36,7 @@ public abstract class AndroidAbstractStringP2PSender extends AndroidAbstractGene
     /**
      * <i><b>translateToBytes</b></i>
      *
-     * <pre> </pre>protected byte[] translateToBytes(String message) </pre>
+     * <pre> protected byte[] translateToBytes(String message) </pre>
      *
      * @param message the message to translate.
      * @return the byte array obtained from the message.

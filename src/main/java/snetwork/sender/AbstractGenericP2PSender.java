@@ -24,7 +24,7 @@ public abstract class AbstractGenericP2PSender<T> extends AbstractP2PSender impl
     /**
      * <i><b>getConnectionMessage</b></i>
      *
-     * <pre> </pre>protected {@link T} getConnectionMessage() </pre>
+     * <pre> protected {@link T} getConnectionMessage() </pre>
      *
      * @return the message which will be send as a start connection message.
      */

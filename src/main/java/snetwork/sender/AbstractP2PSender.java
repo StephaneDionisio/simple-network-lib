@@ -20,7 +20,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
      * Constructor of {@link AbstractP2PSender}.
      * @param port the port used.
      * @param timeout the socket timeout in milliseconds for the search of peers.
-     *                timeout <= 0 for no timeout.
+     *                timeout &lt;= 0 for no timeout.
      */
     protected AbstractP2PSender(int port, int timeout) {
         super(port, timeout);
@@ -50,7 +50,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     /**
      * <i><b>searchPeer</b></i>
      *
-     * <pre> protected boolean searchPeer({@link List}<{@link InetAddress}> addresses) </pre>
+     * <pre> protected boolean searchPeer({@link List}&lt;{@link InetAddress}&gt; addresses) </pre>
      *
      * Search and set a peer to be the sender (equivalent to {@link #searchPeer(List)} with a null argument)
      * @return true if a peer is found, otherwise false.
@@ -63,7 +63,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     /**
      * <i><b>searchPeer</b></i>
      *
-     * <pre> protected boolean searchPeer({@link List}<{@link InetAddress}> addresses) </pre>
+     * <pre> protected boolean searchPeer({@link List}&lt;{@link InetAddress}&gt; addresses) </pre>
      *
      * Search and set a peer to be the sender.
      * @param addresses the of of potential peers addresses.
@@ -149,7 +149,7 @@ public abstract class AbstractP2PSender extends AbstractP2PLink {
     /**
      * <i><b>getConnectionMessage</b></i>
      *
-     * <pre> </pre>protected byte[] getConnectionMessage() </pre>
+     * <pre> protected byte[] getConnectionMessage() </pre>
      *
      * @return the message which will be send as a start connection message.
      */

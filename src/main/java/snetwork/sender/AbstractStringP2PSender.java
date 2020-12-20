@@ -19,7 +19,7 @@ public abstract class AbstractStringP2PSender extends AbstractGenericP2PSender<S
     /**
      * <i><b>translateFromBytes</b></i>
      *
-     * <pre> </pre>protected String translateFromBytes(byte[] message) </pre>
+     * <pre> protected String translateFromBytes(byte[] message) </pre>
      *
      * @param message the message to translate.
      * @return the String obtained from the message.
@@ -32,7 +32,7 @@ public abstract class AbstractStringP2PSender extends AbstractGenericP2PSender<S
     /**
      * <i><b>translateToBytes</b></i>
      *
-     * <pre> </pre>protected byte[] translateToBytes(String message) </pre>
+     * <pre> protected byte[] translateToBytes(String message) </pre>
      *
      * @param message the message to translate.
      * @return the byte array obtained from the message.

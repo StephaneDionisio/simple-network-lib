@@ -15,7 +15,7 @@ public abstract class AndroidAbstractGenericP2PSender<T> extends AndroidAbstract
      *
      * @param port    the port used.
      * @param timeout the socket timeout in milliseconds for the search of peers.
-     *                timeout <= 0 for no timeout.
+     *                timeout &lt;= 0 for no timeout.
      * @param owner   the application.
      */
     protected AndroidAbstractGenericP2PSender(int port, int timeout, Application owner) {
@@ -25,7 +25,7 @@ public abstract class AndroidAbstractGenericP2PSender<T> extends AndroidAbstract
     /**
      * <i><b>getConnectionMessage</b></i>
      *
-     * <pre> </pre>protected {@link T} getConnectionMessage() </pre>
+     * <pre> protected {@link T} getConnectionMessage() </pre>
      *
      * @return the message which will be send as a start connection message.
      */
