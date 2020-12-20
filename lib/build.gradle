@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+}
+
+group 'com.github.stephanedionisio'
+version '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8 // java 8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation 'com.google.android:android:4.1.1.4'
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
