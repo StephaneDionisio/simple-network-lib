@@ -30,6 +30,6 @@ When the connection is up, the receiver stops listening for connection to start 
 
     dependencies {
         ...
-        implementation 'com.github.StephaneDionisio:simple-network-lib:1.0'
+        implementation 'com.github.StephaneDionisio:simple-network-lib:2.+'
     }
 ```
